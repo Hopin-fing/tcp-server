@@ -15,6 +15,7 @@ export class AppController {
 	@Post()
 	getStart(@Body() body: number[]): Observable<number> {
 		console.log('test');
-		return this.client.send<number>({ cmd: 'sum' }, body);
+		// return this.client.send<number>({ cmd: 'sum' }, body);
+		return this.client.emit<number>({ cmd: 'sum' }, body);
 	}
 }
