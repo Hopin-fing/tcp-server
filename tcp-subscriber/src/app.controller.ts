@@ -1,36 +1,38 @@
 import { Controller, Logger } from '@nestjs/common';
-import { EventPattern, MessagePattern } from '@nestjs/microservices';
+import { Ctx, EventPattern, MessagePattern, Payload, TcpContext } from '@nestjs/microservices';
 import { AppService } from './app.service';
+import { Request } from 'express';
+import { Observable, from } from 'rxjs';
 // import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
 	constructor(private readonly appService: AppService) {}
 
-	// @MessagePattern('sum')
-	// async sumNumbers(data: Array<number>) {
-	// 	logger.log('math microservice recieved a request to sum ' + data.toString());
-	// 	return { result: data.reduce((a, b) => a + b) };
-	// }
 	// @MessagePattern({ cmd: 'sum' })
-	// async sumNumbers() {
-	// 	console.log('math microservice recieved a request to sum ');
-	// 	return { result: 1 };
+	// async accumulate(values: number[]): Promise<number> {
+	// 	console.log('Message from publisher!');
+	// 	return (values ?? []).reduce((acc, curr) => acc + curr);
 	// }
-
-	@MessagePattern({ cmd: 'sum' })
-	async accumulate(values: number[]): Promise<number> {
-		console.log('Receive message from publisher!');
-		return (values ?? []).reduce((acc, curr) => acc + curr);
-	}
 
 	// @MessagePattern({ cmd: 'sum' })
 	// async accumulate(data: number[]): Promise<number> {
 	// 	return (data || []).reduce((a, b) => a + b);
 	// }
-	// @EventPattern('user_created')
-	// async handleUserCreated() {
-	// 	console.log('test');
-	// 	return 'test';
+
+	// @EventPattern()
+	// async getIpAddressFromRequest(@Ip() ip): Promise<void> {
+	// 	console.log('Message from publisher!', ip);
+	// }
+
+	@EventPattern()
+	async getIp(@Payload() data: number, @Ctx() context: TcpContext): Promise<any> {
+		const client = context.getSocketRef();
+		const clientIp = client.socket.remoteAddress;
+		this.appService.checkBitmask(data, clientIp);
+		// return clientIp;
+	}
+	// async getIpAddressFromRequest(values: number[]): Promise<void> {
+	// 	console.log('Message from publisher!', values);
 	// }
 }
