@@ -15,8 +15,10 @@ client.on('connect',function(){
 	const data = {data:4}
 	const message = JSON.stringify(data);
 	const req = message.length + '#' + message
-
-	client.write(req);
+	console.log("message ", message)
+	console.log("req ", req)
+	// client.write(req);
+	client.write(message);
     
 });
 

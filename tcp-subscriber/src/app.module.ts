@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 // import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+import { TcpModule } from './module/tcp/tcp.module';
 // import * as net from 'net';
 
 @Module({
-	imports: [],
+	imports: [TcpModule],
 	controllers: [AppController],
 	providers: [AppService],
 })

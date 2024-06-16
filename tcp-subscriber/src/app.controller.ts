@@ -1,8 +1,8 @@
-import { Controller, Logger } from '@nestjs/common';
+import { CallHandler, Controller, ExecutionContext, Logger, UseInterceptors } from '@nestjs/common';
 import { Ctx, EventPattern, MessagePattern, Payload, TcpContext } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { Request } from 'express';
-import { Observable, from } from 'rxjs';
+import { Observable, from, tap } from 'rxjs';
 // import { AppService } from './app.service';
 
 @Controller()
@@ -25,7 +25,7 @@ export class AppController {
 	// 	console.log('Message from publisher!', ip);
 	// }
 
-	@EventPattern()
+	@EventPattern('')
 	async getIp(@Payload() data: number, @Ctx() context: TcpContext): Promise<any> {
 		const client = context.getSocketRef();
 		const clientIp = client.socket.remoteAddress;

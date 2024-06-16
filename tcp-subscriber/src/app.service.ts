@@ -14,7 +14,7 @@ export class AppService {
 	createLog(bitmask: number, ip: string): void {
 		const currentDate = moment().format('DD_MM_YYYY');
 		const currentTime = moment().format('HH:mm:ss');
-		const currentPath = `${getAppRootDir()}\\logs\\${currentDate}.log`;
+		const currentPath = `${getAppRootDir()}/logs/${currentDate}.log`;
 
 		if (!fs.existsSync(currentPath)) {
 			fs.appendFile(currentPath, `Get new mask - ${bitmask};  ip - ${ip}; time - ${currentTime}`, function (err) {
@@ -29,7 +29,12 @@ export class AppService {
 	writeNewNote(bitmask: number, ip: string, currentTime: string, currentPath: string): void {
 		fs.appendFile(currentPath, `\nGet new mask - ${bitmask};  ip - ${ip}; time - ${currentTime}`, function (err) {
 			if (err) throw err;
-			console.log('Saved!111');
 		});
+	}
+
+	checkIP(ip: string): string {
+		const IPv4reg = /(?<!\d)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?!\d)/gm;
+		if (IPv4reg.test(ip)) return ip.match(IPv4reg)[0];
+		this.createLog(0, ip + ' something wrong!');
 	}
 }
