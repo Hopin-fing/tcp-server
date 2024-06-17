@@ -12,11 +12,11 @@ client.connect({ port: port, host: host });
 client.on('connect',function(){
    
     console.log('run!');
-	const data = {data:4}
+	const data = {data:8}
 	const message = JSON.stringify(data);
 	const req = message.length + '#' + message
-	console.log("message ", message)
 	console.log("req ", req)
+	console.log("message ", message)
 	// client.write(req);
 	client.write(message);
     

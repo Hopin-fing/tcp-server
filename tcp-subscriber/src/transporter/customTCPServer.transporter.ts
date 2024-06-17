@@ -13,39 +13,20 @@ import {
 	TCP_DEFAULT_HOST,
 	TCP_DEFAULT_PORT,
 } from './constants';
-// import { TcpContext } from '../ctx-host/tcp.context';
-// import { JsonSocket, TcpSocket } from '../helpers';
-import { ConnectionOptions, createServer as tlsCreateServer } from 'tls';
-// import { CustomTransportStrategy, IncomingRequest, PacketId, ReadPacket, WritePacket } from '../interfaces';
-// import { TcpOptions } from '../interfaces/microservice-configuration.interface';
+import { createServer as tlsCreateServer } from 'tls';
 import {
 	CustomTransportStrategy,
-	Deserializer,
 	IncomingRequest,
 	JsonSocket,
 	PacketId,
 	ReadPacket,
-	Serializer,
 	Server,
 	TcpContext,
+	TcpOptions,
 	TcpSocket,
-	Transport,
 	WritePacket,
 } from '@nestjs/microservices';
 
-interface TcpOptions {
-	transport?: Transport.TCP;
-	options?: {
-		host?: string;
-		port?: number;
-		retryAttempts?: number;
-		retryDelay?: number;
-		serializer?: Serializer;
-		tlsOptions?: ConnectionOptions;
-		deserializer?: Deserializer;
-		socketClass?: Type<TcpSocket>;
-	};
-}
 export class CustomServerTCP extends Server implements CustomTransportStrategy {
 	protected server: NetSocket;
 
@@ -85,9 +66,7 @@ export class CustomServerTCP extends Server implements CustomTransportStrategy {
 
 	public bindHandler(socket: Socket) {
 		const readSocket = this.getSocketInstance(socket);
-		// console.log('readSocket', readSocket);
 		readSocket.on(DATA_EVENT, async (msg: any) => {
-			// 	console.log('msg', msg.toString());
 			this.handleData(readSocket, msg);
 		});
 		readSocket.on(MESSAGE_EVENT, async (msg: ReadPacket & PacketId) => {
@@ -127,12 +106,7 @@ export class CustomServerTCP extends Server implements CustomTransportStrategy {
 
 	public async handleMessage(socket: TcpSocket, rawMessage: unknown) {
 		const packet = await this.deserializer.deserialize(rawMessage);
-		console.log('packet handleMessage', packet);
-
 		const pattern = !isString(packet.pattern) ? JSON.stringify(packet.pattern) : packet.pattern;
-
-		console.log('pattern handleMessage', pattern);
-
 		const tcpContext = new TcpContext([socket, pattern]);
 		if (isUndefined((packet as IncomingRequest).id)) {
 			return this.handleEvent(pattern, packet, tcpContext);

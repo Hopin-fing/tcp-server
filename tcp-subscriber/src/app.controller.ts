@@ -2,7 +2,6 @@ import { CallHandler, Controller, ExecutionContext, Logger, UseInterceptors } fr
 import { Ctx, EventPattern, MessagePattern, Payload, TcpContext } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { Request } from 'express';
-import { Observable, from, tap } from 'rxjs';
 // import { AppService } from './app.service';
 
 @Controller()
@@ -20,11 +19,6 @@ export class AppController {
 	// 	return (data || []).reduce((a, b) => a + b);
 	// }
 
-	// @EventPattern()
-	// async getIpAddressFromRequest(@Ip() ip): Promise<void> {
-	// 	console.log('Message from publisher!', ip);
-	// }
-
 	@EventPattern('')
 	async getIp(@Payload() data: number, @Ctx() context: TcpContext): Promise<any> {
 		const client = context.getSocketRef();
@@ -32,7 +26,4 @@ export class AppController {
 		this.appService.checkBitmask(data, clientIp);
 		// return clientIp;
 	}
-	// async getIpAddressFromRequest(values: number[]): Promise<void> {
-	// 	console.log('Message from publisher!', values);
-	// }
 }
